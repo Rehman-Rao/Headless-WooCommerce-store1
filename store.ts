@@ -116,6 +116,8 @@ const useStore = create<StoreState>()(
     }),
     {
       name: "cart-store",
+      version: 2,
+      migrate: () => ({ items: [], favoriteProduct: [] }),
     }
   )
 );

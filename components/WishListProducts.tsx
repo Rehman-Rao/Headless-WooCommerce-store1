@@ -90,14 +90,16 @@ const WishListProducts = () => {
                       </td>
                       <td
                         className={`p-2 w-24 ${
-                          (product?.stock as number) > 0
+                          product.stock === null || product.stock > 0
                             ? "text-green-600"
                             : "text-red-600"
                         } font-medium text-sm hidden md:table-cell`}
                       >
-                        {(product?.stock as number) > 0
+                        {product.stock === null
                           ? "In Stock"
-                          : "Out of Stock"}
+                          : product.stock > 0
+                            ? `${product.stock} in stock`
+                            : "Out of Stock"}
                       </td>
                       <td className="p-2">
                         <PriceFormatter amount={product?.price} />

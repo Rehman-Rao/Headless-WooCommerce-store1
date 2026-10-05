@@ -6,7 +6,7 @@ import React, { useState } from "react";
 
 interface Props {
   images?: string[];
-  isStock?: number;
+  isStock?: number | null;
 }
 
 const ImageView = ({ images = [], isStock }: Props) => {

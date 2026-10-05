@@ -19,7 +19,7 @@ const AddToCartButton = ({ product, className }: Props) => {
   const isOutOfStock = product?.stock === 0;
 
   const handleAddToCart = () => {
-    if ((product?.stock as number) > itemCount) {
+    if (product.stock === null || product.stock > itemCount) {
       addItem(product);
       toast.success(
         `${product?.name?.substring(0, 12)}... added successfully!`

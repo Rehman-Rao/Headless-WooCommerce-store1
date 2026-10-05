@@ -25,7 +25,12 @@ const ProductGrid = () => {
           response.filter(
             (product) =>
               selected === "others" ||
-              product.variant.toLowerCase() === selected
+              product.variant.toLowerCase() === selected ||
+              product.categorySlugs.some(
+                (slug) =>
+                  slug === selected ||
+                  slug.replace(/s$/, "") === selected.toLowerCase()
+              )
           )
         );
       } catch (error) {

@@ -58,7 +58,10 @@ function apiUrl(path: string, query?: URLSearchParams) {
   return `${wordpressUrl}/wp-json/${path}${query?.size ? `?${query}` : ""}`;
 }
 
-async function fetchResource<T>(path: string, query?: URLSearchParams): Promise<T> {
+async function fetchResource<T>(
+  path: string,
+  query?: URLSearchParams
+): Promise<T> {
   const url =
     typeof window === "undefined"
       ? apiUrl(path, query)
@@ -105,7 +108,9 @@ function mapProduct(raw: StoreProduct): Product {
       regularPrice > 0 && salePrice !== null
         ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
         : 0,
-    stock: raw.is_in_stock ? (raw.low_stock_remaining ?? 999) : 0,
+    stock: raw.is_in_stock
+      ? (raw.low_stock_remaining ?? null)
+      : 0,
     variant:
       raw.attributes?.find((attribute) => !attribute.name.toLowerCase().includes("brand"))
         ?.terms?.[0]?.name ?? "",
@@ -122,8 +127,13 @@ function mapProduct(raw: StoreProduct): Product {
 }
 
 export async function getProducts(): Promise<Product[]> {
-  const query = new URLSearchParams({ per_page: "100" });
-  const products = await fetchResource<StoreProduct[]>("wc/store/v1/products", query);
+  const products: StoreProduct[] = [];
+  for (let page = 1; ; page += 1) {
+    const query = new URLSearchParams({ per_page: "100", page: String(page) });
+    const batch = await fetchResource<StoreProduct[]>("wc/store/v1/products", query);
+    products.push(...batch);
+    if (batch.length < 100) break;
+  }
   return products.map(mapProduct);
 }
 
@@ -133,12 +143,19 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getCategories(quantity?: number): Promise<ProductCategory[]> {
-  const query = new URLSearchParams({ per_page: "100" });
-  const categories = await fetchResource<StoreCategory[]>(
-    "wc/store/v1/products/categories",
-    query
-  );
-  return (quantity === undefined ? categories : categories.slice(0, quantity)).map((category) => ({
+  const categories: StoreCategory[] = [];
+  for (let page = 1; ; page += 1) {
+    const query = new URLSearchParams({ per_page: "100", page: String(page) });
+    const batch = await fetchResource<StoreCategory[]>(
+      "wc/store/v1/products/categories",
+      query
+    );
+    categories.push(...batch);
+    if (batch.length < 100) break;
+  }
+  const selectedCategories =
+    quantity === undefined ? categories : categories.slice(0, quantity);
+  return selectedCategories.map((category) => ({
     _id: String(category.id),
     id: category.id,
     title: category.name,
@@ -216,7 +233,11 @@ export async function getOthersBlog(slug: string, quantity: number) {
 
 export async function getBlogCategories() {
   const posts = await getPosts(100);
-  const names = new Set(posts.flatMap((post) => post.blogcategories.map((category) => category.title)));
+  const names = new Set(
+    posts.flatMap((post) =>
+      post.blogcategories.map((category) => category.title)
+    )
+  );
   return [...names].map((title) => ({ blogcategories: [{ title }] }));
 }
 

@@ -25,7 +25,7 @@ const QuantityButtons = ({ product, className }: Props) => {
   };
 
   const handleAddToCart = () => {
-    if ((product?.stock as number) > itemCount) {
+    if (product.stock === null || product.stock > itemCount) {
       addItem(product);
       toast.success("Quantity Increased successfully!");
     } else {

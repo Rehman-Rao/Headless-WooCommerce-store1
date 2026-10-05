@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Shopcart online store, Your one stop shop for all your needs",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
