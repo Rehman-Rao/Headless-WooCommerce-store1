@@ -1,11 +1,11 @@
-import { Category } from "@/sanity.types";
+import { ProductCategory } from "@/lib/wordpress-types";
 import React from "react";
 import Title from "../Title";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 
 interface Props {
-  categories: Category[];
+  categories: ProductCategory[];
   selectedCategory?: string | null;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string | null>>;
 }

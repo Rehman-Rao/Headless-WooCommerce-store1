@@ -1,7 +1,6 @@
 import Container from "@/components/Container";
 import Title from "@/components/Title";
-import { urlFor } from "@/sanity/lib/image";
-import { getAllBlogs } from "@/sanity/queries";
+import { getAllBlogs } from "@/lib/wordpress";
 import dayjs from "dayjs";
 import { Calendar } from "lucide-react";
 import Image from "next/image";
@@ -20,10 +19,11 @@ const BlogPage = async () => {
             <div key={blog?._id} className="rounded-md overflow-hidden group">
               {blog?.mainImage && (
                 <Image
-                  src={urlFor(blog?.mainImage).url()}
+                  src={blog.mainImage ?? ""}
                   alt="blogImage"
                   width={500}
                   height={500}
+                  unoptimized
                   className="w-full max-h-80 object-cover"
                 />
               )}

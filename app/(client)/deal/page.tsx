@@ -1,11 +1,11 @@
 import Container from "@/components/Container";
 import ProductCard from "@/components/ProductCard";
 import Title from "@/components/Title";
-import { getDealProducts } from "@/sanity/queries";
+import { getProducts } from "@/lib/wordpress";
 import React from "react";
 
 const DealPage = async () => {
-  const products = await getDealProducts();
+  const products = (await getProducts()).filter((product) => product.status === "sale");
   return (
     <div className="py-10 bg-deal-bg">
       <Container>

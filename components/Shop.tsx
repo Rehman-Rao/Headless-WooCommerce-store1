@@ -1,5 +1,5 @@
 "use client";
-import { BRANDS_QUERYResult, Category, Product } from "@/sanity.types";
+import { Product, ProductBrand, ProductCategory } from "@/lib/wordpress-types";
 import React, { useEffect, useState } from "react";
 import Container from "./Container";
 import Title from "./Title";
@@ -7,14 +7,14 @@ import CategoryList from "./shop/CategoryList";
 import { useSearchParams } from "next/navigation";
 import BrandList from "./shop/BrandList";
 import PriceList from "./shop/PriceList";
-import { client } from "@/sanity/lib/client";
+import { getProducts } from "@/lib/wordpress";
 import { Loader2 } from "lucide-react";
 import NoProductAvailable from "./NoProductAvailable";
 import ProductCard from "./ProductCard";
 
 interface Props {
-  categories: Category[];
-  brands: BRANDS_QUERYResult;
+  categories: ProductCategory[];
+  brands: ProductBrand[];
 }
 const Shop = ({ categories, brands }: Props) => {
   const searchParams = useSearchParams();
@@ -33,30 +33,25 @@ const Shop = ({ categories, brands }: Props) => {
     setLoading(true);
     try {
       let minPrice = 0;
-      let maxPrice = 10000;
+      let maxPrice = Number.POSITIVE_INFINITY;
       if (selectedPrice) {
         const [min, max] = selectedPrice.split("-").map(Number);
         minPrice = min;
         maxPrice = max;
       }
-      const query = `
-      *[_type == 'product' 
-        && (!defined($selectedCategory) || references(*[_type == "category" && slug.current == $selectedCategory]._id))
-        && (!defined($selectedBrand) || references(*[_type == "brand" && slug.current == $selectedBrand]._id))
-        && price >= $minPrice && price <= $maxPrice
-      ] 
-      | order(name asc) {
-        ...,"categories": categories[]->title
-      }
-    `;
-      const data = await client.fetch(
-        query,
-        { selectedCategory, selectedBrand, minPrice, maxPrice },
-        { next: { revalidate: 0 } }
+      const data = await getProducts();
+      setProducts(
+        data.filter(
+          (product) =>
+            (!selectedCategory ||
+              product.categorySlugs.includes(selectedCategory)) &&
+            (!selectedBrand || product.brandSlugs.includes(selectedBrand)) &&
+            product.price >= minPrice &&
+            product.price <= maxPrice
+        )
       );
-      setProducts(data);
     } catch (error) {
-      console.log("Shop product fetching Error", error);
+      console.error("WooCommerce product fetch failed:", error);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { Product } from "@/sanity.types";
+import { Product } from "@/lib/wordpress-types";
 import useStore from "@/store";
 import React from "react";
 import { Button } from "./ui/button";

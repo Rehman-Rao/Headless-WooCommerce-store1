@@ -1,8 +1,7 @@
 import React from "react";
 import Title from "./Title";
-import { getLatestBlogs } from "@/sanity/queries";
+import { getLatestBlogs } from "@/lib/wordpress";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
 import dayjs from "dayjs";
@@ -18,10 +17,11 @@ const LatestBlog = async () => {
             {blog?.mainImage && (
               <Link href={`/blog/${blog?.slug?.current}`}>
                 <Image
-                  src={urlFor(blog?.mainImage).url()}
+                  src={blog.mainImage!}
                   alt="blogImage"
                   width={500}
                   height={500}
+                  unoptimized
                   className="w-full max-h-80 object-cover"
                 />
               </Link>

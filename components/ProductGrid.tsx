@@ -3,31 +3,33 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { motion, AnimatePresence } from "motion/react";
-import { client } from "@/sanity/lib/client";
+import { getProducts } from "@/lib/wordpress";
 import NoProductAvailable from "./NoProductAvailable";
 import { Loader2 } from "lucide-react";
 import Container from "./Container";
 import HomeTabbar from "./HomeTabbar";
 import { productType } from "@/constants/data";
-import { Product } from "@/sanity.types";
+import { Product } from "@/lib/wordpress-types";
 
 const ProductGrid = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
-  const query = `*[_type == "product" && variant == $variant] | order(name asc){
-  ...,"categories": categories[]->title
-}`;
-  const params = { variant: selectedTab.toLowerCase() };
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await client.fetch(query, params);
-        setProducts(await response);
+        const response = await getProducts();
+        const selected = selectedTab.toLowerCase();
+        setProducts(
+          response.filter(
+            (product) =>
+              selected === "others" ||
+              product.variant.toLowerCase() === selected
+          )
+        );
       } catch (error) {
-        console.log("Product fetching Error", error);
+        console.error("WooCommerce product fetch failed:", error);
       } finally {
         setLoading(false);
       }

@@ -1,10 +1,8 @@
-import { Product } from "@/sanity.types";
-import { urlFor } from "@/sanity/lib/image";
+import { Product } from "@/lib/wordpress-types";
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-import { StarIcon } from "@sanity/icons";
-import { Flame } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import PriceView from "./PriceView";
 import Title from "./Title";
 import ProductSideMenu from "./ProductSideMenu";
@@ -14,14 +12,15 @@ const ProductCard = ({ product }: { product: Product }) => {
   return (
     <div className="text-sm border-[1px] rounded-md border-darkBlue/20 group bg-white">
       <div className="relative group overflow-hidden bg-shop_light_bg">
-        {product?.images && (
+        {product.images.length > 0 && (
           <Link href={`/product/${product?.slug?.current}`}>
             <Image
-              src={urlFor(product.images[0]).url()}
+              src={product.images[0]}
               alt="productImage"
               width={500}
               height={500}
               priority
+              unoptimized
               className={`w-full h-64 object-contain overflow-hidden transition-transform bg-shop_light_bg duration-500 
               ${product?.stock !== 0 ? "group-hover:scale-105" : "opacity-50"}`}
             />
@@ -55,7 +54,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         <div className="flex items-center gap-2">
           <div className="flex items-center">
             {[...Array(5)].map((_, index) => (
-              <StarIcon
+              <Star
                 key={index}
                 className={
                   index < 4 ? "text-shop_light_green" : " text-lightText"

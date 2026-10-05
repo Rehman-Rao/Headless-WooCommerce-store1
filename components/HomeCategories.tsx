@@ -1,11 +1,10 @@
 import React from "react";
 import Title from "./Title";
-import { Category } from "@/sanity.types";
+import { ProductCategory } from "@/lib/wordpress-types";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 
-const HomeCategories = ({ categories }: { categories: Category[] }) => {
+const HomeCategories = ({ categories }: { categories: ProductCategory[] }) => {
   return (
     <div className="bg-white border border-shop_light_green/20 my-10 md:my-20 p-5 lg:p-7 rounded-md">
       <Title className="border-b pb-3">Popular Categories</Title>
@@ -19,10 +18,11 @@ const HomeCategories = ({ categories }: { categories: Category[] }) => {
               <div className="overflow-hidden border border-shop_orange/30 hover:border-shop_orange hoverEffect w-20 h-20 p-1">
                 <Link href={`/category/${category?.slug?.current}`}>
                   <Image
-                    src={urlFor(category?.image).url()}
+                    src={category.image ?? ""}
                     alt="categoryImage"
                     width={500}
                     height={500}
+                    unoptimized
                     className="w-full h-full object-contain group-hover:scale-110 hoverEffect"
                   />
                 </Link>

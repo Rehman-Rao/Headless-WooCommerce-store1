@@ -6,10 +6,9 @@ import Container from "./Container";
 import { Heart, X } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { Product } from "@/sanity.types";
+import { Product } from "@/lib/wordpress-types";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 import PriceFormatter from "./PriceFormatter";
 import AddToCartButton from "./AddToCartButton";
 
@@ -68,10 +67,11 @@ const WishListProducts = () => {
                             className="border rounded-md group hidden md:inline-flex"
                           >
                             <Image
-                              src={urlFor(product?.images[0]).url()}
+                              src={product?.images[0] ?? ""}
                               alt={"product image"}
                               width={80}
                               height={80}
+                              unoptimized
                               className="rounded-md group-hover:scale-105 hoverEffect h-20 w-20 object-contain"
                             />
                           </Link>

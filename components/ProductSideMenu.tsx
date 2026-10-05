@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Product } from "@/sanity.types";
+import { Product } from "@/lib/wordpress-types";
 import useStore from "@/store";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";

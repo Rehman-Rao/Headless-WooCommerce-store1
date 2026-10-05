@@ -1,9 +1,8 @@
 import React from "react";
 import Title from "./Title";
 import Link from "next/link";
-import { getAllBrands } from "@/sanity/queries";
+import { getAllBrands } from "@/lib/wordpress";
 import Image from "next/image";
-import { urlFor } from "@/sanity/lib/image";
 import { GitCompareArrows, Headset, ShieldCheck, Truck } from "lucide-react";
 
 const extraData = [
@@ -51,13 +50,15 @@ const ShopByBrands = async () => {
           >
             {brand?.image && (
               <Image
-                src={urlFor(brand?.image).url()}
+                src={brand.image!}
                 alt="brandImage"
                 width={250}
                 height={250}
+                unoptimized
                 className="w-32 h-20 object-contain"
               />
             )}
+            {!brand?.image && <span className="font-semibold">{brand.title}</span>}
           </Link>
         ))}
       </div>

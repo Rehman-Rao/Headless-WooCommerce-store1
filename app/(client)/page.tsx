@@ -4,7 +4,7 @@ import HomeCategories from "@/components/HomeCategories";
 import LatestBlog from "@/components/LatestBlog";
 import ProductGrid from "@/components/ProductGrid";
 import ShopByBrands from "@/components/ShopByBrands";
-import { getCategories } from "@/sanity/queries";
+import { getCategories } from "@/lib/wordpress";
 
 import React from "react";
 

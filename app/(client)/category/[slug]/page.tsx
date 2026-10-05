@@ -1,7 +1,7 @@
 import CategoryProducts from "@/components/CategoryProducts";
 import Container from "@/components/Container";
 import Title from "@/components/Title";
-import { getCategories } from "@/sanity/queries";
+import { getCategories } from "@/lib/wordpress";
 import React from "react";
 
 const CategoryPage = async ({

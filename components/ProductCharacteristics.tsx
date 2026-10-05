@@ -1,5 +1,4 @@
-import { Product } from "@/sanity.types";
-import { getBrand } from "@/sanity/queries";
+import { Product } from "@/lib/wordpress-types";
 import React from "react";
 import {
   Accordion,
@@ -8,14 +7,11 @@ import {
   AccordionTrigger,
 } from "./ui/accordion";
 
-const ProductCharacteristics = async ({
+const ProductCharacteristics = ({
   product,
 }: {
   product: Product | null | undefined;
 }) => {
-  const brand = await getBrand(product?.slug?.current as string);
-  console.log(brand);
-
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
@@ -23,9 +19,9 @@ const ProductCharacteristics = async ({
         <AccordionContent>
           <p className="flex items-center justify-between">
             Brand:{" "}
-            {brand && (
+            {product?.brands[0] && (
               <span className="font-semibold tracking-wide">
-                {brand[0]?.brandName}
+                {product.brands[0]}
               </span>
             )}
           </p>

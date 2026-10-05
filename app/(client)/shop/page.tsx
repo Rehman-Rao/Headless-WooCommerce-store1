@@ -1,5 +1,5 @@
 import Shop from "@/components/Shop";
-import { getAllBrands, getCategories } from "@/sanity/queries";
+import { getAllBrands, getCategories } from "@/lib/wordpress";
 import React from "react";
 
 const ShopPage = async () => {

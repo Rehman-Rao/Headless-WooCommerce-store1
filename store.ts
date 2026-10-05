@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "./sanity.types";
+import { Product } from "./lib/wordpress-types";
 
 export interface CartItem {
   product: Product;
@@ -74,10 +74,11 @@ const useStore = create<StoreState>()(
       },
       getSubTotalPrice: () => {
         return get().items.reduce((total, item) => {
-          const price = item.product.price ?? 0;
-          const discount = ((item.product.discount ?? 0) * price) / 100;
-          const discountedPrice = price + discount;
-          return total + discountedPrice * item.quantity;
+          const price =
+            item.product.salePrice !== null
+              ? item.product.regularPrice
+              : item.product.price;
+          return total + price * item.quantity;
         }, 0);
       },
       getItemCount: (productId) => {
