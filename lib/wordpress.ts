@@ -68,10 +68,19 @@ async function fetchResource<T>(
       : `/api/wordpress/${path}${query?.toString() ? `?${query}` : ""}`;
 
   const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!response.ok || !contentType.includes("application/json")) {
     const detail = await response.text();
+    if (
+      response.status === 403 &&
+      /checking your browser before accessing|hcdn-cgi\/jschallenge/i.test(detail)
+    ) {
+      throw new Error(
+        "The WordPress host's CDN is blocking API access with a browser-verification challenge. Allow server-side requests to /wp-json/wc/store/v1/* and /wp-json/wp/v2/*, or disable browser verification for those REST API paths in the hosting/CDN security settings. Then retry the storefront."
+      );
+    }
     throw new Error(
-      `WordPress API request failed (${response.status}): ${detail.slice(0, 300)}`
+      `WordPress API request failed (${response.status}, ${contentType || "unknown content type"}): ${detail.slice(0, 300)}`
     );
   }
   return (await response.json()) as T;
